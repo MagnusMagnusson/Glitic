@@ -8,4 +8,5 @@ class Game(UriModel):
     owners = models.ManyToManyField(User)
 
     def __str__(self):
-        return self.shortName + " - " + self.owners.all()[0].username
+        name = self.shortName if self.shortName != "" else self.name
+        return name + " - " + self.owners.all()[0].username

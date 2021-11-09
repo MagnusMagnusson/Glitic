@@ -49,6 +49,10 @@ class Event(UriModel):
 
         
 class Eventcounter(UriModel):
+    class Meta:
+        verbose_name = 'Event Group'
+        verbose_name_plural = 'Event Groups'
+
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
     date = models.DateField(auto_now = True)
 
@@ -79,16 +83,32 @@ class Eventcounter(UriModel):
         )
         er.save()
 
+    def __str__(self):
+        return str(self.event) +  " > " + str(self.date)
+
 
 class Eventnote(UriModel):
+    class Meta:
+        verbose_name = 'Event Counter'
+        verbose_name_plural = 'Event Counters'
     counter = models.ForeignKey(Eventcounter, on_delete=models.CASCADE)
     note = models.CharField(max_length=64, default = "", blank = True)
     value = models.IntegerField(default = 0)
 
+    def __str__(self):
+        return str(self.counter) + " > " + self.note + " counter"
 
-class Eventregister(UriModel):
+
+class Eventregister(UriModel):    
+    class Meta:
+        verbose_name = 'Event Log'
+        verbose_name_plural = 'Event Logs'
+
     counter = models.ForeignKey(Eventcounter, on_delete=models.CASCADE)
     date = models.DateTimeField(auto_now = True)
     note = models.CharField(max_length = 64, default ="", blank = True)
     info = models.TextField(max_length=1024)
+
+    def __str__(self):
+        return str(self.counter) + ", " + self.note + " ("+self.id+")"
     

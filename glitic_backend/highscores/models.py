@@ -11,6 +11,10 @@ class Simpletable(UriModel):
     ascending_secondary = models.BooleanField(default = True)
     user_unique = models.BooleanField(default = True) 
 
+    class Meta:
+        verbose_name = 'Simple Highscore Table'
+        verbose_name_plural = 'Simple Highscore Tables'
+
     def add(self, primary, secondary, label, username, userid):
         score = Simplescore(
             table = self,
@@ -30,8 +34,11 @@ class Simpletable(UriModel):
         scores = self.Simplescore_set.order_by( '-primary' if self.ascending_primary else 'primary','-secondary' if self.ascending_secondary else 'secondary')
         return scores[p * n : (p+1) * n]
 
+    def __str__(self):
+        return str(self.game) + " : " + self.name
 
-class Simplescore(models.Model):
+
+class Simplescore(models.Model):    
     table = ForeignKey(Simpletable, on_delete=models.CASCADE, null=False)
     primary = models.FloatField()
     secondary = models.FloatField()
@@ -39,3 +46,11 @@ class Simplescore(models.Model):
     date = models.DateTimeField(auto_now=True)
     username = models.CharField(max_length=128)
     userid = models.CharField(max_length=128)
+
+        
+    class Meta:
+        verbose_name = 'Simple Highscore Entry'
+        verbose_name_plural = 'Simple Highscore Entries'
+
+    def __str__(self):
+        return str(self.table) + " " +self.label + " (" + str(self.primary) + ", " + str(self.secondary) +", " + self.username+ ")"
