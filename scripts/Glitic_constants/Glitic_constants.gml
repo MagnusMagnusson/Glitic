@@ -1,0 +1,3 @@
+function Glitic_constants(){
+
+}
