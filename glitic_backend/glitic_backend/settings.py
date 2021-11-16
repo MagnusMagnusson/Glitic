@@ -43,7 +43,9 @@ INSTALLED_APPS = [
     'games',
     'highscores',
     'events',
-    'errors'
+    'errors',
+    'clientkeys',
+    'api_router'
 ]
 
 MIDDLEWARE = [

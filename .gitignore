@@ -1,2 +1,5 @@
 glittic_env/
 secret.py
+xmlrpc.py
+db.sqlite3
+*.pyc
