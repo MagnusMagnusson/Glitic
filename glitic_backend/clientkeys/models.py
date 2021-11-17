@@ -3,14 +3,14 @@ from games.models import Game
 from django.core.exceptions import PermissionDenied
 import secrets
 import random
-
+from django.utils import timezone
+from datetime import datetime, timedelta
+import hashlib
 
 class ClientKeyPermission(models.Model):
     code = models.CharField(max_length = 16, primary_key=True)
     name = models.CharField(max_length = 32, unique = True)
     description = models.CharField(max_length = 256)
-
-
 
 class Clientkey(models.Model):
     game = models.ForeignKey(Game, on_delete=models.CASCADE)
@@ -77,3 +77,53 @@ class Clientkey(models.Model):
         key.save()
         return key
 
+    def GenerateToken(self, cToken, encoding):
+        t = ClientToken()
+        token = secrets.token_urlsafe(8)[:8]
+        while ClientToken.objects.filter(servertoken = token).exists():
+            token = secrets.token_urlsafe(8)[:8]
+        t.servertoken = token 
+        t.clienttoken = cToken
+        t.encoding = encoding
+        t.key = self
+        t.save()
+        return t
+
+    def isValid(self):
+        return not (self.revoked or self.expired)
+            
+
+class ClientToken(models.Model):
+    servertoken = models.CharField(max_length=16, primary_key=True)
+    clienttoken = models.CharField(max_length=16)
+    key = models.ForeignKey(Clientkey, on_delete=models.CASCADE)
+    encoding = models.CharField(max_length=10, default="sha1")
+
+    last_active = models.DateTimeField(auto_now=True)
+
+    def expired(self):
+        if self.last_active + timedelta(hours = 6) < timezone.make_aware(datetime.now()):
+            self.delete()
+            return True
+        return False
+
+
+    def ping(self):
+        self.last_active = timezone.now()
+        self.save()
+
+    def getHashObject(self):
+            enc = self.encoding
+            if enc == "sha256":
+                test = hashlib.sha256()
+            elif enc == "sha224":
+                test = hashlib.sha224()
+            elif enc == "sha384":
+                test = hashlib.sha384()
+            elif enc == "sha512":
+                test = hashlib.sha512()
+            elif enc == "md5":
+                test = hashlib.md5()
+            else:
+                test = hashlib.sha1()
+            return test
