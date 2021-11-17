@@ -1,7 +1,11 @@
 {
   "resources": [
+    {"id":{"name":"Glitic_Util","path":"scripts/Glitic_Util/Glitic_Util.yy",},"order":3,},
+    {"id":{"name":"GliticRequest","path":"scripts/GliticRequest/GliticRequest.yy",},"order":4,},
+    {"id":{"name":"Glitic_test_object","path":"objects/Glitic_test_object/Glitic_test_object.yy",},"order":3,},
     {"id":{"name":"o_glitic_network_manager","path":"objects/o_glitic_network_manager/o_glitic_network_manager.yy",},"order":1,},
     {"id":{"name":"Glitic_constants","path":"scripts/Glitic_constants/Glitic_constants.yy",},"order":2,},
+    {"id":{"name":"Glitic_test_room","path":"rooms/Glitic_test_room/Glitic_test_room.yy",},"order":2,},
     {"id":{"name":"Glitic","path":"scripts/Glitic/Glitic.yy",},"order":0,},
   ],
   "Options": [
@@ -18,7 +22,9 @@
     "name": "Default",
     "children": [],
   },
-  "RoomOrderNodes": [],
+  "RoomOrderNodes": [
+    {"roomId":{"name":"Glitic_test_room","path":"rooms/Glitic_test_room/Glitic_test_room.yy",},},
+  ],
   "Folders": [
     {"folderPath":"folders/Glitic.yy","order":1,"resourceVersion":"1.0","name":"Glitic","tags":[],"resourceType":"GMFolder",},
   ],
