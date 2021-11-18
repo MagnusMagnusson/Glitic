@@ -1,1 +1,1 @@
-glitic_disconnect();
+Glitic().disconnect();

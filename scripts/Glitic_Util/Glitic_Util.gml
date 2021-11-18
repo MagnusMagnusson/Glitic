@@ -28,13 +28,14 @@ global.GliticUtil = {
 	HTTP_ASYNC_RESPONSE : function(async_load){
 		var req = undefined;
 		try{
-			req = ds_map_find_value(global.GliticData.requests, async_load[? "id"])
+			req = ds_map_find_value(global.GliticRequestMap, async_load[? "id"])
 			req.status = async_load[?"http_status"];
 			req.result = async_load[? "result"];
+			var manager = req.owner;
 			if(is_undefined(req)){
 				exit;
 			} else{
-				ds_map_delete(global.GliticData.requests, async_load[?"id"])
+				ds_map_delete(global.GliticRequestMap, async_load[?"id"])
 			}
 
 			if(async_load[?"http_status"] >= 200 && async_load[?"http_status"] < 300){
@@ -48,10 +49,10 @@ global.GliticUtil = {
 						break;
 					}
 					case GliticRequestType.disconnect : {
-						global.GliticData.connected = false;
-						global.GliticData.game = undefined;
-						global.GliticData.cToken = undefined;
-						global.GliticData.sToken = undefined;
+						manager.connected = false;
+						manager.game = undefined;
+						manager.cToken = undefined;
+						manager.sToken = undefined;
 						if(variable_struct_exists(req.conf,"success")){
 							req.conf.success();
 						}
@@ -71,12 +72,13 @@ global.GliticUtil = {
 	},
 	
 	HTTP_ON_CONNECT : function(req, async_load){
+		var manager = req.owner;
 		var data = {};
 		try{
 			data = json_parse(async_load[? "result"]);
-			global.GliticData.game = data.game;
-			global.GliticData.sToken = data.token;
-			global.GliticData.connected = true;
+			manager.game = data.game;
+			manager.sToken = data.token;
+			manager.connected = true;
 			return data.game;
 			
 		}
@@ -91,13 +93,4 @@ global.GliticUtil = {
 		}
 		return token;
 	}
-}
-
-
-global.GliticData = {
-	game : undefined,
-	sToken : undefined,
-	cToken : undefined,
-	connected : false,
-	requests : ds_map_create(),
 }

@@ -1,6 +1,7 @@
-function GliticRequest(_url, config) constructor{
+function GliticRequest(manager, _url, config) constructor{
 	url = _url;
 	conf = config;
+	owner = manager;
 	
 	req_id = undefined;
 	req_type = undefined;
@@ -13,6 +14,7 @@ function GliticRequest(_url, config) constructor{
 	}
 	
 	static _send = function(){
+		global.GliticUtil.NETWORK_OBJECT();
 		var headers = ds_map_create();
 		headers[? "Accept"] = "application/json";
 		headers[? "Content-Type"] = "application/json";	
@@ -32,19 +34,19 @@ function GliticRequest(_url, config) constructor{
 			bod = "";
 		}
 		
-		if(global.GliticData.connected){
-			headers[? "X-token"] = global.GliticData.sToken;
+		if(self.owner.is_connected()){
+			headers[? "X-token"] =self.owner.sToken;
 			headers[? "X-imp"] = imp;
 					
 			if(self.method_safe(meth)){
-				headers[? "X-checksum"] = sha1_string_utf8(self.url + imp + global.GliticData.cToken);	
+				headers[? "X-checksum"] = sha1_string_utf8(self.url + imp + self.owner.cToken);	
 			} else{
-				headers[? "X-checksum"] = sha1_string_utf8(bod + imp + global.GliticData.cToken);	
+				headers[? "X-checksum"] = sha1_string_utf8(bod + imp + self.owner.cToken);	
 			}
 		}
 
 		req_id = http_request(self.url, meth, headers, bod);
-		global.GliticData.requests[? req_id] = self;
+		global.GliticRequestMap[? req_id] = self;
 		ds_map_destroy(headers);
 	}
 	
@@ -63,3 +65,5 @@ function GliticRequest(_url, config) constructor{
 		return self;
 	}
 }
+
+global.GliticRequestMap = ds_map_create();

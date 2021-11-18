@@ -2,8 +2,8 @@
   "isDnD": false,
   "isCompatibility": false,
   "parent": {
-    "name": "Glitic",
-    "path": "folders/Glitic.yy",
+    "name": "Glitic_Classes",
+    "path": "folders/Glitic/Glitic_Classes.yy",
   },
   "resourceVersion": "1.0",
   "name": "GliticRequest",

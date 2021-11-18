@@ -2,11 +2,11 @@
   "isDnD": false,
   "isCompatibility": false,
   "parent": {
-    "name": "Glitic_Utils",
-    "path": "folders/Glitic/Glitic_Utils.yy",
+    "name": "Glitic_Classes",
+    "path": "folders/Glitic/Glitic_Classes.yy",
   },
   "resourceVersion": "1.0",
-  "name": "Glitic_constants",
+  "name": "GliticManager",
   "tags": [],
   "resourceType": "GMScript",
 }

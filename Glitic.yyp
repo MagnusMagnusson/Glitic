@@ -1,10 +1,12 @@
 {
   "resources": [
-    {"id":{"name":"Glitic_Util","path":"scripts/Glitic_Util/Glitic_Util.yy",},"order":3,},
-    {"id":{"name":"GliticRequest","path":"scripts/GliticRequest/GliticRequest.yy",},"order":4,},
+    {"id":{"name":"Glitic_Util","path":"scripts/Glitic_Util/Glitic_Util.yy",},"order":1,},
+    {"id":{"name":"GliticRequest","path":"scripts/GliticRequest/GliticRequest.yy",},"order":0,},
     {"id":{"name":"Glitic_test_object","path":"objects/Glitic_test_object/Glitic_test_object.yy",},"order":3,},
+    {"id":{"name":"GliticTable","path":"scripts/GliticTable/GliticTable.yy",},"order":2,},
     {"id":{"name":"o_glitic_network_manager","path":"objects/o_glitic_network_manager/o_glitic_network_manager.yy",},"order":1,},
-    {"id":{"name":"Glitic_constants","path":"scripts/Glitic_constants/Glitic_constants.yy",},"order":2,},
+    {"id":{"name":"Glitic_constants","path":"scripts/Glitic_constants/Glitic_constants.yy",},"order":0,},
+    {"id":{"name":"GliticManager","path":"scripts/GliticManager/GliticManager.yy",},"order":1,},
     {"id":{"name":"Glitic_test_room","path":"rooms/Glitic_test_room/Glitic_test_room.yy",},"order":2,},
     {"id":{"name":"Glitic","path":"scripts/Glitic/Glitic.yy",},"order":0,},
   ],
@@ -27,6 +29,8 @@
   ],
   "Folders": [
     {"folderPath":"folders/Glitic.yy","order":1,"resourceVersion":"1.0","name":"Glitic","tags":[],"resourceType":"GMFolder",},
+    {"folderPath":"folders/Glitic/Glitic_Classes.yy","order":5,"resourceVersion":"1.0","name":"Glitic_Classes","tags":[],"resourceType":"GMFolder",},
+    {"folderPath":"folders/Glitic/Glitic_Utils.yy","order":6,"resourceVersion":"1.0","name":"Glitic_Utils","tags":[],"resourceType":"GMFolder",},
   ],
   "AudioGroups": [
     {"targets":-1,"resourceVersion":"1.3","name":"audiogroup_default","resourceType":"GMAudioGroup",},

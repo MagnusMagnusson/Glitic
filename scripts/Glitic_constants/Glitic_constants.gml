@@ -1,7 +1,6 @@
 enum GliticRequestType{
 	connect,
 	disconnect,
-	
 }
 
 #macro GliticIsProd false
