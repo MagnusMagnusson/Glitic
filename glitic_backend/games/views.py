@@ -1,35 +1,35 @@
 import json
+from re import I
 from django.contrib.auth.models import User
+from django.core.exceptions import PermissionDenied
 from django.http.response import JsonResponse
 from django.shortcuts import get_object_or_404
 from games.serializers import GameSerializer
 from games.models import Game
 from rest_framework import viewsets
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.decorators import action
+from rest_framework.decorators import action, permission_classes
 from clientkeys.models import ClientToken
-from clientkeys.permissions import ClientKeyChecksumMatch
+from clientkeys.permissions import ClientKeyChecksumMatch,IsAuthenticatedOrClientAuthenticted
 import hashlib
 
 class GameViewSet(viewsets.ViewSet):
-    
-    def get_permissions(self):
-        perm = super().get_permissions()
-        if self.action != 'connect':
-            perm.append(ClientKeyChecksumMatch)
-        return perm
-
-
     def list(self, request):
-        queryset = Game.objects.all()
+        if not request.user.is_authenticated:
+            raise PermissionDenied
+        queryset = Game.objects.filter(owners = request.user)
         serializer = GameSerializer(queryset, many=True)
         return Response(serializer.data)
 
-    def retrieve(self, request, pk=None):
+    def retrieve(self, request, pk=None):  
         queryset = Game.objects.all()
         game = get_object_or_404(queryset, pk=pk)
-        serializer = GameSerializer(game)
-        return Response(serializer.data)
+        if  ClientKeyChecksumMatch.has_permission(request, self) or (request.user.is_authenticated and game.owners.filter(id = request.user.id).exists()):
+            serializer = GameSerializer(game)
+            return Response(serializer.data)
+        else:
+            raise PermissionDenied
 
     @action(detail=True, methods=['post'])
     def connect(self, request, pk=None):
@@ -80,7 +80,8 @@ class GameViewSet(viewsets.ViewSet):
 
         
     @action(detail=True, methods=['post'])
-    def disconnect(self, request, pk=None):
+    def disconnect(self, request, pk=None):       
+        permission_classes = [ClientKeyChecksumMatch]
         data = request.data
         if not 'token' in data:
             return JsonResponse({"error":"Missing token"}, status = 400)

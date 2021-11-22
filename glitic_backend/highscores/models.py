@@ -42,7 +42,7 @@ class Simplescore(models.Model):
     table = ForeignKey(Simpletable, on_delete=models.CASCADE, null=False)
     primary = models.FloatField()
     secondary = models.FloatField()
-    label = models.CharField(max_length=16)
+    label = models.CharField(max_length=16, blank=True)
     date = models.DateTimeField(auto_now=True)
     username = models.CharField(max_length=128)
     userid = models.CharField(max_length=128)

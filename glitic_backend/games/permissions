@@ -1,0 +1,11 @@
+from rest_framework.permissions import BasePermission, SAFE_METHODS
+import hashlib
+
+class UserOwnsGame(BasePermission):
+    message = "User is not owner of accessed game"
+    def has_permission(request, view):
+        return True
+
+    def has_object_permission(self, request, view, obj):
+        return True
+
