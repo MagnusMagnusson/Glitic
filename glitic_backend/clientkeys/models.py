@@ -107,6 +107,9 @@ class ClientToken(models.Model):
             return True
         return False
 
+    @property
+    def game(self):
+        return self.key.game
 
     def ping(self):
         self.last_active = timezone.now()

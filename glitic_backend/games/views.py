@@ -25,7 +25,7 @@ class GameViewSet(viewsets.ViewSet):
     def retrieve(self, request, pk=None):  
         queryset = Game.objects.all()
         game = get_object_or_404(queryset, pk=pk)
-        if  ClientKeyChecksumMatch.has_permission(request, self) or (request.user.is_authenticated and game.owners.filter(id = request.user.id).exists()):
+        if  ClientKeyChecksumMatch.has_permission(request, self) or game.owners.filter(id = request.user.id).exists():
             serializer = GameSerializer(game)
             return Response(serializer.data)
         else:
@@ -81,7 +81,8 @@ class GameViewSet(viewsets.ViewSet):
         
     @action(detail=True, methods=['post'])
     def disconnect(self, request, pk=None):       
-        permission_classes = [ClientKeyChecksumMatch]
+        if not ClientKeyChecksumMatch.has_permission(request, self):
+            raise PermissionDenied
         data = request.data
         if not 'token' in data:
             return JsonResponse({"error":"Missing token"}, status = 400)

@@ -18,8 +18,8 @@ class Simpletable(UriModel):
     def add(self, primary, secondary, label, username, userid):
         score = Simplescore(
             table = self,
-            primary_score = primary,
-            secondary_score = secondary,
+            primary = primary,
+            secondary = secondary,
             label = label,
             username = username,
             userid = userid
