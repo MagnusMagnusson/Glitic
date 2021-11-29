@@ -36,7 +36,7 @@ class GameViewSet(viewsets.ViewSet):
         data = request.data
         queryset = Game.objects.all()
         game = get_object_or_404(queryset, pk=pk)
-        key = game.clientkey_set.filter(prefix=data["key"] if 'key' in data else None)
+        key = game.clientkey_set.filter(prefix=data["key"] if 'key' in data else "")
         
         validHash = False
         if len(key) == 1:
@@ -59,6 +59,8 @@ class GameViewSet(viewsets.ViewSet):
                 test = hashlib.md5()
             else:
                 test = hashlib.sha1()
+        else:
+            return JsonResponse({"detail: Incorrect secret key provided"}, status=403)
 
         try:
             test.update(data["token"].encode("utf-8") if 'token' in data else None)
@@ -71,7 +73,6 @@ class GameViewSet(viewsets.ViewSet):
             return JsonResponse({"error":"Failed to verify checksum token"}, status=401)
         else:
             t = key.GenerateToken(data['token'], enc)
-            resp = {}
             gameData = GameSerializer(game).data
             return JsonResponse({
                 "game" : gameData,
@@ -80,7 +81,7 @@ class GameViewSet(viewsets.ViewSet):
 
         
     @action(detail=True, methods=['post'])
-    def disconnect(self, request, pk=None):       
+    def disconnect(self, request, pk=None):      
         if not ClientKeyChecksumMatch.has_permission(request, self):
             raise PermissionDenied
         data = request.data

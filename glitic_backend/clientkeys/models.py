@@ -43,7 +43,7 @@ class Clientkey(models.Model):
     def genkey(self):
         if not (self.originalKey == ""):
             raise PermissionDenied()
-        t = "abcdefghijklmnopqrstuvwxyz1234567890"
+        t = "abcdefghijklmnopqrstuvwxyz123456789a0"
         p = secrets.token_urlsafe(4)[:4].replace("-",t[random.randint(0,36)]).replace("_",t[random.randint(0,36)])
         s = secrets.token_urlsafe(8)[:8].replace("-",t[random.randint(0,36)]).replace("_",t[random.randint(0,36)])
         cand = Clientkey.objects.filter(prefix = p, suffix = s).exists()
@@ -55,18 +55,19 @@ class Clientkey(models.Model):
         self.suffix = s
         self.key = self.prefix + "-" + self.suffix
 
-    def save(self):
+    def save(self,*args, **kwargs):
         if(self.revoked or self.expired):
             raise PermissionDenied()
         if self.hasChanged():
             raise PermissionDenied()
         if self.originalKey == "":
             self.genkey()
-        super(Clientkey, self).save()
+        super(Clientkey, self).save(*args, **kwargs)
 
     def hasPermission(self, permission):
         return self.clientkeypermission_set.filter(code = permission).exists()
     
+
     @staticmethod 
     def GenerateKey(game, name = None, expires = None, details = None):
         key = Clientkey(

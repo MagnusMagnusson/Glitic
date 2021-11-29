@@ -22,27 +22,26 @@ class ClientKeyChecksumMatch(BasePermission):
             'x-token' in request.headers  
         ):
             return False
+        
         hash = request.headers["X-checksum"]
         imp = request.headers["X-imp"]
         token = request.headers["X-token"]
+
         try:
             digest = ""
             token_key = ClientToken.objects.get(servertoken = token)
             request.client_key = token_key
             hasher = token_key.getHashObject()
             if request.method in SAFE_METHODS:
-                print("Safe")
-                print(request.get_full_path())
                 return True
             else:  
                 b = request.body
                 hasher.update(b)
                 hasher.update(imp.encode("utf-8"))     
                 hasher.update(token_key.clienttoken.encode("utf-8"))
-                digest = hasher.hexdigest() 
+                digest = hasher.hexdigest()
             return digest == hash
         except ClientToken.DoesNotExist:
-            print("Not existing")
             request.client_key = None
             return False
 

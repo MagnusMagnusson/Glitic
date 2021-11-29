@@ -9,7 +9,7 @@ class UriModel(models.Model):
         abstract = True
     id = models.CharField(max_length=10, primary_key=True, editable=False)
 
-    def save(self):
+    def save(self,*args, **kwargs):
         if not hasattr(self, "id") or not self.id or self.id == None:
             tid = secrets.token_urlsafe(urilength)[:urilength]
             cand = type(self).objects.filter(id = tid).exists()
@@ -17,4 +17,4 @@ class UriModel(models.Model):
                 tid = secrets.token_urlsafe(urilength)[:urilength]
                 cand = type(self).objects.filter(id = tid).exists()
             self.id = tid
-        super().save()
+        super().save(*args, **kwargs)
