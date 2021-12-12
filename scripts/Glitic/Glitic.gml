@@ -1,3 +1,11 @@
+/*
+	Glitic.gml
+	
+	Thank you for chosing Glitic for your online highscore and analytic needs.
+	
+	We recommend that you read 
+*/
+
 global.GliticSingleton = undefined;
 
 function Glitic(){

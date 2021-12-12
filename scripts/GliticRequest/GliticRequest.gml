@@ -9,11 +9,11 @@ function GliticRequest(manager, _url, config) constructor{
 	result = "";
 	imp = global.GliticUtil.GENSTRING(8);
 	
-	static method_safe = function(meth){
+	method_safe = function(meth){
 		return meth == "GET" || meth == "OPTIONS" || meth == "HEAD";
 	}
 	
-	static _send = function(){
+	_send = function(){
 		global.GliticUtil.NETWORK_OBJECT();
 		var headers = ds_map_create();
 		headers[? "Accept"] = "application/json";
@@ -39,31 +39,34 @@ function GliticRequest(manager, _url, config) constructor{
 			headers[? "X-imp"] = imp;
 					
 			if(self.method_safe(meth)){
-				headers[? "X-checksum"] = sha1_string_utf8(self.url + imp + self.owner.cToken);	
+				show_debug_message("/api"+self.url)
+				headers[? "X-checksum"] = sha1_string_utf8("/api"+self.url + imp + self.owner.cToken);	
 			} else{
 				headers[? "X-checksum"] = sha1_string_utf8(bod + imp + self.owner.cToken);	
 			}
 		}
 
-		req_id = http_request(self.url, meth, headers, bod);
+		req_id = http_request(GliticURL+ self.url, meth, headers, bod);
 		global.GliticRequestMap[? req_id] = self;
 		ds_map_destroy(headers);
 	}
 	
-	static success = function(func){
+	onSuccess = function(func){
 		conf.success = func;
 		return self;
 	}
 	
-	static fail = function(func){
+	onFail = function(func){
 		conf.fail = func;
 		return self;
 	}
 	
-	static caught = function(func){
+	onException = function(func){
 		conf.caught = func;
 		return self;
 	}
+	
+	onResponse = function(func){
+		conf.response = func;
+	}
 }
-
-global.GliticRequestMap = ds_map_create();

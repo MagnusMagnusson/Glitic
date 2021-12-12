@@ -1,15 +1,12 @@
 function GliticManager() constructor{
-	game = {
-		id : undefined,
-		name : undefined,
-		tables : [],
-	};
+	game = global.GliticUtil.EMPTY_GAME();
 	sToken = undefined;
 	cToken = undefined;
 	connected = false;
+	clid = undefined;
 	tableObjects = {};
 	
-	static connect = function(gameId, key){
+	connect = function(gameId, key){
 		if(self.is_connected()){
 			exit;
 		}
@@ -21,11 +18,10 @@ function GliticManager() constructor{
 		}
 		pre = sk[0];
 		post = sk[1];
-		var _url = GliticURL;
 		var token = global.GliticUtil.GENSTRING(8);
 		self.cToken = token;
 	
-		var req = new GliticRequest(self, _url + "/game/"+gameId+"/connect/",{
+		var req = new GliticRequest(self, "/game/"+gameId+"/connect/",{
 			method : "POST",
 			body : {
 				key : pre,
@@ -40,14 +36,13 @@ function GliticManager() constructor{
 		return req;
 	}
 
-	static disconnect = function(){
+	disconnect = function(){
 		if(!self.is_connected()){
 			return;
 		}
 		var req, game, _url;
 		game = self.game.id;
-		_url = GliticURL;
-		_url += "/game/"+game+"/disconnect/";
+		_url = "/game/"+game+"/disconnect/";
 		req = new GliticRequest(self,_url, {
 			method: "POST",
 			body : {
@@ -55,25 +50,34 @@ function GliticManager() constructor{
 			}
 		});
 		req.req_type = GliticRequestType.disconnect;
-		req._send();	
+		req._send();
+		return req;
 	}
 
-	static is_connected = function(){
+	is_connected = function(){
 		return self.connected;
 	}
 	
-	static table = function(table_name_or_id){
-		if( !self.is_connected()){
-			throw "GliticManager.Table(): Trying to access tables while not connected";
+	table_list = function(){
+		if(!self.is_connected()){
+			return [];
+		} else{
+			return game.tables;
 		}
+	}
+	
+	table = function(table_name_or_id){
 		var tables = self.game.tables;
 		for(var i = 0; i < array_length(tables); i++){
 			var t = tables[i];
 			if(t.id == table_name_or_id || t.name == table_name_or_id){
 				if(variable_struct_exists(self.tableObjects,t.id)){
+					show_debug_message(table_name_or_id + " has been found at id " + string(t.id))
 					return self.tableObjects[$ t.id];
 				} else{
-					var tob = new GliticTable(t.id, t.name);
+					show_debug_message(table_name_or_id + " got created at " + string(t.id))
+					var tob = new GliticTable(self, t.id, t.name);
+					self.tableObjects[$ t.id] = tob;
 					return tob;
 				}
 			}
