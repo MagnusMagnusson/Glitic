@@ -1,0 +1,1 @@
+lastmessage = "No request made yet";
