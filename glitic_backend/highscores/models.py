@@ -1,8 +1,9 @@
+from glitic_backend.util.get_ip import get_client_ip
 from glitic_backend.util.urimodel import UriModel
 from django.db import models
 from django.db.models.fields.related import ForeignKey
 from games.models import Game
-import secrets
+
 
 class Simpletable(UriModel):
     name = models.CharField(max_length=64)
@@ -15,17 +16,24 @@ class Simpletable(UriModel):
         verbose_name = 'Simple Highscore Table'
         verbose_name_plural = 'Simple Highscore Tables'
 
-    def add(self, primary, secondary, label, username, userid):
+    def add(self, primary, secondary, label, username, userid, clientid, ip):
         score = Simplescore(
             table = self,
             primary = primary,
             secondary = secondary,
             label = label,
             username = username,
-            userid = userid
+            userid = userid,
+            clientid = clientid,
+            ip = ip
         )
         score.save()
         return score
+    
+    def add(self, request, data):
+        ip = get_client_ip(request)
+        clientid = request.META['clid']
+        return self.add(data['primary'], data['secondary'], data['label'], data['username'], data['userid'], clientid, ip)
 
     def clear(self):
         self.Simplescore_set.delete()
@@ -37,7 +45,6 @@ class Simpletable(UriModel):
     def __str__(self):
         return str(self.game) + " : " + self.name
 
-
 class Simplescore(models.Model):    
     table = ForeignKey(Simpletable, on_delete=models.CASCADE, null=False)
     primary = models.FloatField()
@@ -46,6 +53,9 @@ class Simplescore(models.Model):
     date = models.DateTimeField(auto_now=True)
     username = models.CharField(max_length=128)
     userid = models.CharField(max_length=128)
+    debug = models.BooleanField(default = False)
+    clientid = models.CharField(max_length=16, null=False, default="N/A")
+    ip = models.GenericIPAddressField()
 
         
     class Meta:
