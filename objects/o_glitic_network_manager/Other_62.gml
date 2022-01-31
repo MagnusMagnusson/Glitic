@@ -1,1 +1,0 @@
-global.GliticUtil.HTTP_ASYNC_RESPONSE(async_load);
