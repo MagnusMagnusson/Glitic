@@ -55,13 +55,13 @@ global.GliticUtil = {
 		var req = undefined;
 		var _id = async_load[? "id"];
 		var http_status, result, status;
-		http_status = async_load[?"http_status"];
-		result = async_load[? "result"];
 		status = async_load[?"status"];
 		if(status == 1){ //We do not concern ourselves with in-progress responses. Skip the event and revisit it when the response is fully completed. 
 			return;
 		}
 		try{ 
+			http_status = async_load[?"http_status"];
+			result = async_load[? "result"];
 			req = global.GliticRequestMap[? _id]; //Retrieve the correct request object from global map. 
 			var manager;
 			if(is_undefined(req)){
@@ -186,7 +186,36 @@ global.GliticUtil = {
 		return token;
 	},
 	
+	CREATENEWSETTINGS : function(){
+	},
+	
 	LOADSETTINGS : function(){
+		var valid = true;
+		var buffer = buffer_load("glconf.dat");
+		global.GliticLoadedSettings = {};
+		try{
+			if(buffer != -1){
+		        var json = buffer_read(buffer, buffer_string);
+		        buffer_delete(buffer)
+		        var conf = json_parse(json);
+				if(!is_struct(conf)){
+					valid = false;
+				}
+				if(variable_struct_exists(conf, "clid")){
+					global.GliticLoadedSettings[$ "clid"] = conf[$ "clid"];
+				} else{
+					valid = false;
+				}
+			} else{
+				valid = false;
+			}
+		} catch(c){
+			valid = false;
+		}
+		
+		if(!valid){
+			return global.GliticUtil.CREATENEWSETTINGS();
+		}
 	}
 }
 
